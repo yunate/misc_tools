@@ -1,0 +1,50 @@
+#!/bin/sh
+#chkconfig: - 85 15
+
+## nginx service
+
+CURRENT_PATH=$(cd `dirname $0`; pwd)
+CURRENT_NAME="${CURRENT_PATH##*/}"
+
+EXEC_PATH=/opt/workspace/nginx/nginx-1.23.1/bin/sbin/nginx
+PREFIX=/opt/workspace/nginx/nginx-1.23.1/bin
+
+set -e
+
+do_start() {
+$EXEC_PATH -p $PREFIX -c $PREFIX/conf/nginx.conf && echo "start nginx successful" || echo "start nginx failure"
+}
+
+do_stop() {
+$EXEC_PATH -s stop && echo "stop nginx successful" || echo "stop nginx failure"
+}
+
+do_reload() {
+$EXEC_PATH -s reload && echo "reload nginx successful" || echo "reload nginx failure"
+}
+
+case "$1" in
+start)
+do_start
+;;
+
+stop)
+do_stop
+;;
+
+reload|graceful)
+do_reload
+;;
+
+restart)
+do_stop
+do_start
+;;
+
+*)
+echo "Usage: $CURRENT_NAME {start|stop|reload|restart}" >&2
+exit 3
+;;
+
+esac
+exit 0
